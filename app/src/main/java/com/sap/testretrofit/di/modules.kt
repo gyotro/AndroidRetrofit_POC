@@ -1,0 +1,85 @@
+package com.sap.testretrofit.di
+
+import android.util.Log
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.sap.cpi_monitor.sessionManager.AuthInterceptor
+import com.sap.cpi_monitor.sessionManager.SessionManager
+import com.sap.testretrofit.TenantData
+import com.sap.testretrofit.data.remote.AuthRepository
+import com.sap.testretrofit.data.remote.MonitorRepository
+import com.sap.testretrofit.presentation.screen.TokenViewModel
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.bind
+import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+
+fun provideRetrofitBuilder(): Retrofit.Builder {
+ //   val networkJson = Json { ignoreUnknownKeys = true }
+    Log.d("NetworkDI","Starting provideRetrofitBuilder")
+    return Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create())
+//        .addConverterFactory( networkJson.asConverterFactory("application/json".toMediaType()) )
+}
+
+fun provideHttpClientBuilder(): OkHttpClient.Builder {
+    Log.d("NetworkDI","Starting provideHttpClient")
+    return OkHttpClient
+        .Builder()
+        .readTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(60, TimeUnit.SECONDS)
+}
+
+fun provideCPIAuth(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ): AuthRepository {
+    val logging = HttpLoggingInterceptor()
+    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+    Log.d("NetworkDI","Starting provideCPIAuth")
+    return builder
+        .baseUrl(TenantData.URL)
+        .client(okHttp.addInterceptor(logging).build())
+        .build()
+        .create(AuthRepository::class.java)
+}
+
+
+/*fun provideHttpClientMoni(): OkHttpClient {
+    val logging = HttpLoggingInterceptor()
+    val authInterceptor = AuthInterceptor()
+    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+    Log.d("NetworkDI","Starting provideHttpClient")
+    return OkHttpClient
+        .Builder()
+        .addInterceptor(authInterceptor)
+        .addInterceptor(logging)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .build()
+}*/
+
+fun provideCPIMonitor(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ): MonitorRepository {
+    val logging = HttpLoggingInterceptor()
+    val authInterceptor = AuthInterceptor()
+    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+    Log.d("NetworkDI","Starting provideCPIMonitor")
+    return builder
+        .baseUrl(TenantData.URL_MONI)
+        .client(okHttp.addInterceptor(authInterceptor).addInterceptor(logging).build())
+        .build()
+        .create(MonitorRepository::class.java)
+}
+
+val appModule = module {
+    single { provideRetrofitBuilder() }
+    single { provideHttpClientBuilder() }
+    single { provideCPIAuth(get(), get()) } bind AuthRepository::class
+    single { SessionManager(get(), get()) }
+    single { provideCPIMonitor(get(), get()) } bind MonitorRepository::class
+    viewModel<TokenViewModel> { TokenViewModel() }
+    Log.d("DI_Modules","Creating View Model")
+}
