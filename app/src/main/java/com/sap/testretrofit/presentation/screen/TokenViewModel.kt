@@ -5,17 +5,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sap.cpi_monitor.domain.resource.BaseModel
 import com.sap.cpi_monitor.sessionManager.SessionManager
 import com.sap.testretrofit.TenantData
 import com.sap.testretrofit.data.remote.AuthRepository
+import com.sap.testretrofit.data.remote.MessageProcessingLogResponseDto
 import com.sap.testretrofit.data.remote.MonitorRepository
+import com.sap.testretrofit.repositories.CpiRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class TokenViewModel: ViewModel(), KoinComponent {
+class TokenViewModel(private val repo: CpiRepo): ViewModel(), KoinComponent {
 
     private val sessionManager: SessionManager by inject()
 
@@ -28,13 +32,13 @@ class TokenViewModel: ViewModel(), KoinComponent {
     private val _cpiMoni = MutableLiveData("No Data")
     val cpiMoni: LiveData<String> get() = _cpiMoni
 
-    private val _cpiMoniFlow = MutableStateFlow("no data")
+    private val _cpiMoniFlow : MutableStateFlow<BaseModel<MessageProcessingLogResponseDto>?> = MutableStateFlow(BaseModel.Loading)
     val cpiMoniFlow = _cpiMoniFlow.asStateFlow()
 
     init {
         Log.d("ViewModel", "Starting TokenViewModel")
         viewModelScope.launch {
-            getMoni()
+            getMoni2()
             Log.d("ViewModel", "getMoni() executed ")
         }
     }
@@ -51,7 +55,17 @@ class TokenViewModel: ViewModel(), KoinComponent {
     private suspend fun getMoni() {
         val token = sessionManager.updateAccessToken()
         Log.d("ViewModel", "token: $token ")
-        _cpiMoniFlow.value = apiCpiMoni.getInterfaces().d.results.joinToString(separator = "---------") { item -> item.integrationFlowName }
+     //   _cpiMoniFlow.value = apiCpiMoni.getInterfaces().body().d.results.joinToString(separator = "---------") { item -> item.integrationFlowName }
+        Log.d("ViewModel","ending getMoni")
+    }
+
+    private suspend fun getMoni2() {
+        sessionManager.updateAccessToken()
+        val token = sessionManager.fetchAuthToken()
+        Log.d("ViewModel", "token: $token ")
+        repo.getCPIMessages().also {
+            baseModel ->  _cpiMoniFlow.update { baseModel }
+        }
         Log.d("ViewModel","ending getMoni")
     }
 

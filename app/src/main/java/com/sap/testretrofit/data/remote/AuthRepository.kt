@@ -1,6 +1,5 @@
 package com.sap.testretrofit.data.remote
 
-import retrofit2.Response
 import retrofit2.http.*
 
 interface AuthRepository {
