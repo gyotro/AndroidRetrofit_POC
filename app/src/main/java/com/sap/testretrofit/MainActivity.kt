@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity(){
 
 @Composable
 fun TokenData(modifier: Modifier = Modifier, viewModel: TokenViewModel) {
-    val data = viewModel.cpiMoni.observeAsState().value ?: "nada"
+    val data = viewModel.cpiMoniFlow.collectAsState().value
     Text(
         text = "Hello $data!",
         modifier = modifier.padding(18.dp)

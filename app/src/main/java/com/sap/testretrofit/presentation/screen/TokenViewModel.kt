@@ -9,6 +9,8 @@ import com.sap.cpi_monitor.sessionManager.SessionManager
 import com.sap.testretrofit.TenantData
 import com.sap.testretrofit.data.remote.AuthRepository
 import com.sap.testretrofit.data.remote.MonitorRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -26,11 +28,12 @@ class TokenViewModel: ViewModel(), KoinComponent {
     private val _cpiMoni = MutableLiveData("No Data")
     val cpiMoni: LiveData<String> get() = _cpiMoni
 
+    private val _cpiMoniFlow = MutableStateFlow("no data")
+    val cpiMoniFlow = _cpiMoniFlow.asStateFlow()
+
     init {
         Log.d("ViewModel", "Starting TokenViewModel")
         viewModelScope.launch {
-            val token = sessionManager.updateAccessToken()
-            Log.d("ViewModel", "token: $token ")
             getMoni()
             Log.d("ViewModel", "getMoni() executed ")
         }
@@ -46,8 +49,9 @@ class TokenViewModel: ViewModel(), KoinComponent {
     }
 
     private suspend fun getMoni() {
-        Log.d("ViewModel","inside getMoni")
-        _cpiMoni.value = apiCpiMoni.getInterfaces().d.results.joinToString(separator = "---------") { item -> item.integrationFlowName }
+        val token = sessionManager.updateAccessToken()
+        Log.d("ViewModel", "token: $token ")
+        _cpiMoniFlow.value = apiCpiMoni.getInterfaces().d.results.joinToString(separator = "---------") { item -> item.integrationFlowName }
         Log.d("ViewModel","ending getMoni")
     }
 
