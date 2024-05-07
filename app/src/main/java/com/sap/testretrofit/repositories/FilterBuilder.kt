@@ -18,7 +18,7 @@ class FilterBuilder(
         if (status.isNotEmpty()) {
             filter = "(Status eq "
             this.status.forEachIndexed { index, statusItem ->
-                filter += "'${statusItem.toString()}'"
+                filter += "'$statusItem'"
                 if (index < this.status.size - 1)
                     filter += " or Status eq"
             }
