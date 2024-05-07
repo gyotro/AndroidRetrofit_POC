@@ -9,7 +9,7 @@ class CpiRepoImpl(
     private val api: MonitorRepository
 ): CpiRepo {
     override suspend fun getCPIMessages(maxNumber: Int, filter: String):BaseModel<MessageProcessingLogResponseDto> {
-        return request { api.getInterfaces(top = maxNumber, filter = "") }
+        return request { api.getInterfaces(top = maxNumber,  filter = filter) }
     }
     private suspend fun<T> request(request: suspend ()-> Response<T>): BaseModel<T> {
         try {

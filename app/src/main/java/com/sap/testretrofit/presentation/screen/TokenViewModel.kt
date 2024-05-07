@@ -63,7 +63,7 @@ class TokenViewModel(private val repo: CpiRepo): ViewModel(), KoinComponent {
         sessionManager.updateAccessToken()
         val token = sessionManager.fetchAuthToken()
         Log.d("ViewModel", "token: $token ")
-        repo.getCPIMessages().also {
+        repo.getCPIMessages(maxNumber = 50, filter = "Status eq 'COMPLETED' or Status eq 'FAILED' or Status eq 'RETRY'").also {
             baseModel ->  _cpiMoniFlow.update { baseModel }
         }
         Log.d("ViewModel","ending getMoni")

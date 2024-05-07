@@ -3,11 +3,12 @@ package com.sap.testretrofit.repositories
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 class FilterBuilder(
-    val startDateTime: LocalDateTime = LocalDateTime.of( LocalDate.now(), LocalTime.of(0,0,1) ),
-    val endDateTime: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS),
+    val startDateTime: LocalDateTime = LocalDateTime.of( LocalDate.now(ZoneId.systemDefault()), LocalTime.of(0,0,1) ),
+    val endDateTime: LocalDateTime = LocalDateTime.now(ZoneId.systemDefault()).truncatedTo(ChronoUnit.SECONDS),
     val status: List<Status> = emptyList<Status>(),
     val nameFlow: String? = null
 ) {
