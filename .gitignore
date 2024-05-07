@@ -1,4 +1,4 @@
-git ststud*.iml
+*.iml
 .gradle
 /local.properties
 /.idea/caches
@@ -14,4 +14,3 @@ git ststud*.iml
 .cxx
 local.properties
 /app/src/main/java/com/sap/testretrofit/TenantData.kt
-/.idea/

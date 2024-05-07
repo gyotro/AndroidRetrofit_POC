@@ -9,6 +9,8 @@ import com.sap.testretrofit.TenantData
 import com.sap.testretrofit.data.remote.AuthRepository
 import com.sap.testretrofit.data.remote.MonitorRepository
 import com.sap.testretrofit.presentation.screen.TokenViewModel
+import com.sap.testretrofit.repositories.CpiRepo
+import com.sap.testretrofit.repositories.CpiRepoImpl
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -41,7 +43,7 @@ fun provideCPIAuth(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ): Au
     logging.setLevel(HttpLoggingInterceptor.Level.BODY);
     Log.d("NetworkDI","Starting provideCPIAuth")
     return builder
-        .baseUrl(TenantData.URL)
+        .baseUrl(TenantData.URL_AUTH)
         .client(okHttp.addInterceptor(logging).build())
         .build()
         .create(AuthRepository::class.java)
@@ -74,12 +76,18 @@ fun provideCPIMonitor(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ):
         .create(MonitorRepository::class.java)
 }
 
+fun repoCPI(CpiApi: MonitorRepository): CpiRepo {
+    Log.d("NetworkDI","Starting repoCPI")
+    return CpiRepoImpl(api = CpiApi)
+}
+
 val appModule = module {
     single { provideRetrofitBuilder() }
-    single { provideHttpClientBuilder() }
+    factory { provideHttpClientBuilder() }
     single { provideCPIAuth(get(), get()) } bind AuthRepository::class
     single { SessionManager(get(), get()) }
     single { provideCPIMonitor(get(), get()) } bind MonitorRepository::class
-    viewModel<TokenViewModel> { TokenViewModel() }
+    single { repoCPI(get()) } bind CpiRepo::class
+    viewModel<TokenViewModel> { TokenViewModel(get()) }
     Log.d("DI_Modules","Creating View Model")
 }
