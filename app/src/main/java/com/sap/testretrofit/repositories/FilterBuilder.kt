@@ -4,6 +4,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 class FilterBuilder(
@@ -36,5 +37,14 @@ class FilterBuilder(
         if (!buildNameFilter().isNullOrBlank())
             totalFilter += " and ${buildNameFilter()}"
         return totalFilter
+    }
+    companion object {
+        fun getDateTimeFromString(dateString: String): LocalDateTime {
+            val pattern = "yyyy-MM-dd HH:mm:ss"
+            val formatter = DateTimeFormatter.ofPattern(pattern)
+
+            // Parse a string into a LocalDateTime object using the formatter
+            return LocalDateTime.parse(dateString, formatter)
+        }
     }
 }

@@ -12,6 +12,7 @@ import com.sap.testretrofit.data.remote.AuthRepository
 import com.sap.testretrofit.data.remote.MessageProcessingLogResponseDto
 import com.sap.testretrofit.data.remote.MonitorRepository
 import com.sap.testretrofit.repositories.CpiRepo
+import com.sap.testretrofit.repositories.FilterBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,29 +24,29 @@ class TokenViewModel(private val repo: CpiRepo): ViewModel(), KoinComponent {
 
     private val sessionManager: SessionManager by inject()
 
-    private val apiAuth: AuthRepository by inject<AuthRepository>()
+/*    private val apiAuth: AuthRepository by inject<AuthRepository>()
     private val apiCpiMoni: MonitorRepository by inject<MonitorRepository>()
 
     private val _cpiToken = MutableLiveData("No Data")
     val cpiToken: LiveData<String> get() = _cpiToken
 
     private val _cpiMoni = MutableLiveData("No Data")
-    val cpiMoni: LiveData<String> get() = _cpiMoni
+    val cpiMoni: LiveData<String> get() = _cpiMoni*/
 
     private val _cpiMoniFlow : MutableStateFlow<BaseModel<MessageProcessingLogResponseDto>?> = MutableStateFlow(BaseModel.Loading)
     val cpiMoniFlow = _cpiMoniFlow.asStateFlow()
 
-    init {
+/*    init {
         Log.d("ViewModel", "Starting TokenViewModel")
         viewModelScope.launch {
             getMoni2()
             Log.d("ViewModel", "getMoni() executed ")
         }
-    }
+    }*/
 
 
 
-    private suspend fun getAuth() {
+/*    private suspend fun getAuth() {
         Log.d("ViewModel","clientID: ${TenantData.clientID}")
         Log.d("ViewModel","clientSecret: ${TenantData.clientSecret}")
         _cpiToken.value = apiAuth.getToken(client_id = TenantData.clientID, client_secret = TenantData.clientSecret, grant_type = TenantData.grant_type, response_type = "token").accessToken
@@ -57,16 +58,20 @@ class TokenViewModel(private val repo: CpiRepo): ViewModel(), KoinComponent {
         Log.d("ViewModel", "token: $token ")
      //   _cpiMoniFlow.value = apiCpiMoni.getInterfaces().body().d.results.joinToString(separator = "---------") { item -> item.integrationFlowName }
         Log.d("ViewModel","ending getMoni")
-    }
+    }*/
 
-    private suspend fun getMoni2() {
-        sessionManager.updateAccessToken()
-        val token = sessionManager.fetchAuthToken()
-        Log.d("ViewModel", "token: $token ")
-        repo.getCPIMessages(maxNumber = 50, filter = "Status eq 'COMPLETED' or Status eq 'FAILED' or Status eq 'RETRY'").also {
+    fun getMoni2(top: Int, filter: FilterBuilder) {
+/*        repo.getCPIMessages(maxNumber = 50, filter = "Status eq 'COMPLETED' or Status eq 'FAILED' or Status eq 'RETRY'").also {
             baseModel ->  _cpiMoniFlow.update { baseModel }
+        }*/
+        viewModelScope.launch {
+            sessionManager.updateAccessToken()
+            val token = sessionManager.fetchAuthToken()
+            Log.d("ViewModel", "token: $token ")
+            repo.getCPIMessages(maxNumber = top, filter = filter.buildTotalFilter()).also {
+                    baseModel ->  _cpiMoniFlow.update { baseModel }
+            }
+            Log.d("ViewModel","ending getMoni")
         }
-        Log.d("ViewModel","ending getMoni")
     }
-
 }

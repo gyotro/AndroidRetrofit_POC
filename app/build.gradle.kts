@@ -77,9 +77,9 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.3")
     //implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     // Koin for dependency injection
-    implementation("io.insert-koin:koin-android:3.5.0")
+    implementation("io.insert-koin:koin-android:3.5.6")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
-
+    implementation("io.insert-koin:koin-androidx-compose:3.5.6")
     // Coil
     implementation("io.coil-kt:coil-compose:2.4.0")
 
