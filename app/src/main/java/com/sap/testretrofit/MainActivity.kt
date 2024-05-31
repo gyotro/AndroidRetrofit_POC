@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -20,7 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.sap.cpi_monitor.domain.resource.BaseModel
 import com.sap.testretrofit.presentation.screen.TokenViewModel
+import com.sap.testretrofit.presentation.ui.theme.LightBlue
+import com.sap.testretrofit.presentation.ui.theme.LightGrey
 import com.sap.testretrofit.presentation.ui.theme.TestRetrofitTheme
 import com.sap.testretrofit.repositories.FilterBuilder
 import com.sap.testretrofit.repositories.Status
@@ -115,7 +120,7 @@ class MainActivity : ComponentActivity() {
             mutableListOf(Status.COMPLETED, Status.FAILED, Status.RETRY)
         }
 
-        LaunchedEffect(top, startDate, endDate, status) {
+        LaunchedEffect(top, startDate, endDate, status, nameFlow) {
             if (top.toInt() > 0 && status.isNotEmpty()) {
                 val filterBuilder = FilterBuilder(
                     startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
@@ -242,7 +247,7 @@ class MainActivity : ComponentActivity() {
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     onValueChange = {
-                      //  startDate = it
+                        //  startDate = it
                     },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Gray,
@@ -273,7 +278,8 @@ class MainActivity : ComponentActivity() {
                             }
                         }) {
                         DatePicker(state = endDateState)
-                        endDate = endDateState.selectedDateMillis?.let { FilterBuilder.epochMillisToLocalDate(it) }.toString()
+                        endDate =
+                            endDateState.selectedDateMillis?.let { FilterBuilder.epochMillisToLocalDate(it) }.toString()
                     }
                 }
                 Spacer(modifier = Modifier.fillMaxWidth(fraction = 0.1f))
@@ -294,7 +300,7 @@ class MainActivity : ComponentActivity() {
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     onValueChange = {
-                   //     startTime = it
+                        //     startTime = it
                     },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Gray,
@@ -318,7 +324,9 @@ class MainActivity : ComponentActivity() {
                         onConfirm = { endTimeOpened = false }
                     ) {
                         TimePicker(state = endTimeState)
-                        endTime = FilterBuilder.timeFormatter(endTimeState.hour) + ':' + FilterBuilder.timeFormatter(endTimeState.minute) + ':' + "00"
+                        endTime = FilterBuilder.timeFormatter(endTimeState.hour) + ':' + FilterBuilder.timeFormatter(
+                            endTimeState.minute
+                        ) + ':' + "00"
                     }
                 }
             }
@@ -376,7 +384,8 @@ class MainActivity : ComponentActivity() {
                             }
                         }) {
                         DatePicker(state = startDateState)
-                        startDate = startDateState.selectedDateMillis?.let { FilterBuilder.epochMillisToLocalDate(it) }.toString()
+                        startDate = startDateState.selectedDateMillis?.let { FilterBuilder.epochMillisToLocalDate(it) }
+                            .toString()
                     }
                 }
                 Spacer(modifier = Modifier.fillMaxWidth(fraction = 0.1f))
@@ -421,42 +430,47 @@ class MainActivity : ComponentActivity() {
                         onConfirm = { startTimeOpened = false }
                     ) {
                         TimePicker(state = startTimeState)
-                        startTime = FilterBuilder.timeFormatter(startTimeState.hour) + ':' + FilterBuilder.timeFormatter(startTimeState.minute) + ':' + "00"
+                        startTime =
+                            FilterBuilder.timeFormatter(startTimeState.hour) + ':' + FilterBuilder.timeFormatter(
+                                startTimeState.minute
+                            ) + ':' + "00"
                     }
                 }
             }
-        }
-        /*       Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LightGrey)
-    ) {
-        when (interfaces) {
-            is BaseModel.Error -> {
-                Text(text = "Base Model Error: ${interfaces.error}")
-            }
-
-            BaseModel.Loading -> {
-                //    Text(text = "Base Model Loading")
-                //        LinearProgressIndicator
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-
-            is BaseModel.Success -> {
-                LazyColumn {
-                    items(interfaces.data.d.results) { item ->
-                        Text(text = item.integrationFlowName)
+ //           Spacer(modifier = Modifier.fillMaxSize(fraction = 0.1f))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(LightBlue)
+            ) {
+                when (interfaces) {
+                    is BaseModel.Error -> {
+                        Text(text = "Base Model Error: ${interfaces.error}")
                     }
+
+                    is BaseModel.Loading -> {
+                        //    Text(text = "Base Model Loading")
+                        //        LinearProgressIndicator
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                    }
+
+                    is BaseModel.Success -> {
+                        LazyColumn {
+                            items(interfaces.data.d.results) { item ->
+                                Text(text = item.integrationFlowName)
+                            }
+                        }
+                    }
+
+                    null -> {
+                        Text(text = "Null case")
+                    }
+
                 }
             }
-
-            null -> {
-                Text(text = "Null case")
-            }
         }
-    }*/
     }
 
     fun setValue(it: String): String {

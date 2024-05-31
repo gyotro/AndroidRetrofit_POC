@@ -15,3 +15,5 @@ val DeepBlue = Color(0xFF102840)
 
 val MediumGrey = Color(0xff7e7e88)
 val LightGrey = Color(0xffc8c0c0)
+
+val LightBlue = Color(0xff7bc4f4)
