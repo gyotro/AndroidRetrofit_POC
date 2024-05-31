@@ -1,9 +1,6 @@
 package com.sap.testretrofit.repositories
 
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
@@ -45,6 +42,21 @@ class FilterBuilder(
 
             // Parse a string into a LocalDateTime object using the formatter
             return LocalDateTime.parse(dateString, formatter)
+        }
+        fun localDateToEpoch(localDate: LocalDate): Long {
+            val localDateTime = localDate.atStartOfDay()
+            val instant = localDateTime.toInstant(ZoneOffset.UTC)
+            return instant.epochSecond
+        }
+        fun epochMillisToLocalDate(epochMillis: Long): LocalDate {
+            val instant = Instant.ofEpochMilli(epochMillis)
+            return instant.atZone(ZoneId.systemDefault()).toLocalDate()
+        }
+        fun timeFormatter(num: Int): String {
+            return if(num < 10)
+                "0"+num
+            else
+                ""+num
         }
     }
 }

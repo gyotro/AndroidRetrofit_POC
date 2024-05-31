@@ -2,6 +2,11 @@ package com.sap.testretrofit.repositories
 
 enum class Status {
     COMPLETED,
-    ERROR,
-    RETRY
+    FAILED,
+    PROCESSING,
+    ESCALATED,
+    DISCARDED,
+    ABANDONED,
+    RETRY,
+    CANCELED
 }
