@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.sap.cpi_monitor.domain.resource.BaseModel
+import com.sap.testretrofit.presentation.screen.CardInterfaceDisplay
 import com.sap.testretrofit.presentation.screen.TokenViewModel
 import com.sap.testretrofit.presentation.ui.theme.LightBlue
 import com.sap.testretrofit.presentation.ui.theme.LightGrey
@@ -117,7 +118,7 @@ class MainActivity : ComponentActivity() {
         var endTimeOpened by remember { mutableStateOf(false) }
 
         var status = remember {
-            mutableListOf(Status.COMPLETED, Status.FAILED, Status.RETRY)
+            mutableListOf(Status.COMPLETED, Status.FAILED, Status.PROCESSING, Status.RETRY, Status.CANCELED)
         }
 
         LaunchedEffect(top, startDate, endDate, status, nameFlow) {
@@ -459,7 +460,8 @@ class MainActivity : ComponentActivity() {
                     is BaseModel.Success -> {
                         LazyColumn {
                             items(interfaces.data.d.results) { item ->
-                                Text(text = item.integrationFlowName)
+                                /*Text(text = item.integrationFlowName)*/
+                                CardInterfaceDisplay(state = item)
                             }
                         }
                     }
