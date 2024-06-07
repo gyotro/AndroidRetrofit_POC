@@ -1,6 +1,8 @@
 package com.sap.testretrofit.presentation.screen
 
+//import android.R
 import android.annotation.SuppressLint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +31,10 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.sap.testretrofit.R
 import com.sap.testretrofit.data.remote.MessageProcessingLog
+import com.sap.testretrofit.presentation.ui.theme.LightGreen
+import com.sap.testretrofit.presentation.ui.theme.LightOrange
+import com.sap.testretrofit.presentation.ui.theme.LightRed
+import com.sap.testretrofit.presentation.ui.theme.LightYellow
 import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
@@ -37,15 +45,22 @@ fun CardInterfaceDisplay(
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = when(state.status) {
-        "COMPLETED" -> Color(R.color.light_green_200)
-        "FAILED" -> Color(R.color.light_red_200)
-        "PROCESSING" -> Color(R.color.orange_200)
-        "RETRY" -> Color(R.color.yellow_200)
+        "COMPLETED" -> LightGreen
+        "FAILED" -> LightRed
+        "PROCESSING" -> LightOrange
+        "RETRY" -> LightYellow
         else -> Color.Gray
     }
         Card(
-            modifier = modifier.padding(8.dp).background(backgroundColor),
-            shape = RoundedCornerShape(10.dp)
+            modifier = modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = backgroundColor
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 20.dp, focusedElevation = 20.dp),
+            shape = RoundedCornerShape(15.dp),
+            border = BorderStroke(2.dp, Color.Black)
         ) {
             Column(
                 modifier = Modifier
