@@ -3,6 +3,11 @@ package com.sap.testretrofit
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,6 +36,7 @@ import com.sap.testretrofit.presentation.ui.theme.LightGrey
 import com.sap.testretrofit.presentation.ui.theme.TestRetrofitTheme
 import com.sap.testretrofit.repositories.FilterBuilder
 import com.sap.testretrofit.repositories.Status
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.LocalTime
@@ -121,7 +127,7 @@ class MainActivity : ComponentActivity() {
         var status = remember {
             mutableListOf(Status.COMPLETED, Status.FAILED, Status.PROCESSING, Status.RETRY, Status.CANCELED)
         }
-        val filterBuilder by remember {
+        /*val filterBuilder by remember {
             mutableStateOf(
                 FilterBuilder(
                     startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
@@ -130,15 +136,16 @@ class MainActivity : ComponentActivity() {
                     status = status
                 )
             )
-        }
+        }*/
         LaunchedEffect(top, startDate, endDate, status, nameFlow) {
             if (top.toInt() > 0 && status.isNotEmpty()) {
-//                val filterBuilder = FilterBuilder(
-//                    startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
-//                    endDateTime = FilterBuilder.getDateTimeFromString("$endDate $endTime"),
-//                    nameFlow = nameFlow,
-//                    status = status
-//                )
+                delay(1500)
+                val filterBuilder = FilterBuilder(
+                    startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
+                    endDateTime = FilterBuilder.getDateTimeFromString("$endDate $endTime"),
+                    nameFlow = nameFlow,
+                    status = status
+                )
                 viewModel.getMoni2(top.toInt(), filter = filterBuilder)
             } else {
                 if (status.isNotEmpty()) {
@@ -455,37 +462,57 @@ class MainActivity : ComponentActivity() {
                 }
             }
             //           Spacer(modifier = Modifier.fillMaxSize(fraction = 0.1f))
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray)
+            AnimatedVisibility(
+                visible = interfaces is BaseModel.Success,
+                enter = fadeIn() + scaleIn(),
+                exit = fadeOut() + scaleOut()
             ) {
-                when (interfaces) {
-                    is BaseModel.Error -> {
-                        Text(text = "Base Model Error: ${interfaces.error}")
-                    }
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.LightGray)
+                ) {
+                    when (interfaces) {
+                        /*is BaseModel.Error -> {
+                            Text(text = "Base Model Error: ${interfaces.error}")
+                        }*/
 
-                    is BaseModel.Loading -> {
-                        //    Text(text = "Base Model Loading")
-                        //        LinearProgressIndicator
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
+                       /* is BaseModel.Loading -> {
+                            //    Text(text = "Base Model Loading")
+                            //        LinearProgressIndicator
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }*/
 
-                    is BaseModel.Success -> {
-                        LazyColumn {
-                            items(interfaces.data.d.results) { item ->
-                                /*Text(text = item.integrationFlowName)*/
-                                CardInterfaceDisplay(state = item)
+                        is BaseModel.Success -> {
+                            LazyColumn {
+                                items(interfaces.data.d.results) { item ->
+                                    /*Text(text = item.integrationFlowName)*/
+                                    CardInterfaceDisplay(state = item)
+                                }
                             }
                         }
-                    }
 
-                    null -> {
-                        Text(text = "Null case")
-                    }
+                        else -> {
+                        }
 
+                    }
+                }
+            }
+            AnimatedVisibility(
+                visible = interfaces is BaseModel.Loading,
+                enter = fadeIn() + scaleIn(),
+                exit = fadeOut() + scaleOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.LightGray)
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
                 }
             }
         }
