@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -120,15 +121,24 @@ class MainActivity : ComponentActivity() {
         var status = remember {
             mutableListOf(Status.COMPLETED, Status.FAILED, Status.PROCESSING, Status.RETRY, Status.CANCELED)
         }
-
-        LaunchedEffect(top, startDate, endDate, status, nameFlow) {
-            if (top.toInt() > 0 && status.isNotEmpty()) {
-                val filterBuilder = FilterBuilder(
+        val filterBuilder by remember {
+            mutableStateOf(
+                FilterBuilder(
                     startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
                     endDateTime = FilterBuilder.getDateTimeFromString("$endDate $endTime"),
                     nameFlow = nameFlow,
                     status = status
                 )
+            )
+        }
+        LaunchedEffect(top, startDate, endDate, status, nameFlow) {
+            if (top.toInt() > 0 && status.isNotEmpty()) {
+//                val filterBuilder = FilterBuilder(
+//                    startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
+//                    endDateTime = FilterBuilder.getDateTimeFromString("$endDate $endTime"),
+//                    nameFlow = nameFlow,
+//                    status = status
+//                )
                 viewModel.getMoni2(top.toInt(), filter = filterBuilder)
             } else {
                 if (status.isNotEmpty()) {
@@ -169,7 +179,8 @@ class MainActivity : ComponentActivity() {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(fraction = 0.35F)
-                        .clip(RoundedCornerShape(8.dp)),
+                        .clip(RoundedCornerShape(8.dp))
+                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp)),
                     value = top,
                     label = {
                         Text("Max Selection")
@@ -197,6 +208,7 @@ class MainActivity : ComponentActivity() {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(fraction = 1F)
+                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
                         .clip(RoundedCornerShape(8.dp)),
                     value = nameFlow,
                     label = {
@@ -233,6 +245,7 @@ class MainActivity : ComponentActivity() {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(fraction = 0.5F)
+                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
                         .clip(RoundedCornerShape(8.dp)),
                     value = endDate,
                     readOnly = true,
@@ -287,6 +300,7 @@ class MainActivity : ComponentActivity() {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(fraction = 1F)
+                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
                         .clip(RoundedCornerShape(8.dp)),
                     value = endTime,
                     label = {
@@ -339,6 +353,7 @@ class MainActivity : ComponentActivity() {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(fraction = 0.5F)
+                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
                         .clip(RoundedCornerShape(8.dp)),
                     value = startDate,
                     readOnly = true,
@@ -393,6 +408,7 @@ class MainActivity : ComponentActivity() {
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(fraction = 1F)
+                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp))
                         .clip(RoundedCornerShape(8.dp)),
                     value = startTime,
                     label = {
@@ -438,11 +454,11 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
- //           Spacer(modifier = Modifier.fillMaxSize(fraction = 0.1f))
+            //           Spacer(modifier = Modifier.fillMaxSize(fraction = 0.1f))
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(LightBlue)
+                    .background(Color.LightGray)
             ) {
                 when (interfaces) {
                     is BaseModel.Error -> {

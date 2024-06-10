@@ -58,5 +58,19 @@ class FilterBuilder(
             else
                 ""+num
         }
+
+        fun parseStatus(logStart: String): String {
+            val startIndex = logStart.indexOf('(')
+            val endIndex = logStart.indexOf(')')
+            return parseMillis(logStart.substring(startIndex + 1, endIndex))
+        }
+
+        private fun parseMillis(millis: String): String {
+            // parsing epoc to LocalDateTime
+            val pattern = "MMM dd, yyyy, HH:mm:ss"
+            val formatter = DateTimeFormatter.ofPattern(pattern)
+            val instant = Instant.ofEpochMilli(millis.toLong())
+            return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(formatter).toString()
+        }
     }
 }
