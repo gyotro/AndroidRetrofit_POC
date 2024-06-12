@@ -1,6 +1,7 @@
 package com.sap.testretrofit
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
@@ -17,12 +18,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,7 +40,6 @@ import com.sap.testretrofit.presentation.ui.theme.LightGrey
 import com.sap.testretrofit.presentation.ui.theme.TestRetrofitTheme
 import com.sap.testretrofit.repositories.FilterBuilder
 import com.sap.testretrofit.repositories.Status
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.LocalTime
@@ -55,6 +58,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     @Preview
     fun MainScreen() {
@@ -66,6 +70,7 @@ class MainActivity : ComponentActivity() {
 
 
     @OptIn(ExperimentalMaterial3Api::class)
+    @ExperimentalMaterial3Api
     @Composable
     fun InitData(modifier: Modifier = Modifier, viewModel: TokenViewModel) {
         val interfaces = viewModel.cpiMoniFlow.collectAsState().value
@@ -137,10 +142,12 @@ class MainActivity : ComponentActivity() {
                 )
             )
         }*/
+        lateinit var filterBuilder: FilterBuilder
         LaunchedEffect(top, startDate, endDate, status, nameFlow) {
+            Log.d("Launched Effect", "First Launched Effect entering")
             if (top.toInt() > 0 && status.isNotEmpty()) {
-                delay(1500)
-                val filterBuilder = FilterBuilder(
+                //delay(1500)
+                filterBuilder = FilterBuilder(
                     startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
                     endDateTime = FilterBuilder.getDateTimeFromString("$endDate $endTime"),
                     nameFlow = nameFlow,
@@ -467,23 +474,15 @@ class MainActivity : ComponentActivity() {
                 enter = fadeIn() + scaleIn(),
                 exit = fadeOut() + scaleOut()
             ) {
+                //TODO complete pull to refresh
+                val pullToRefreshState: PullToRefreshState = rememberPullToRefreshState()
                 Box(
                     modifier = Modifier
+                        .nestedScroll(connection = pullToRefreshState.nestedScrollConnection)
                         .fillMaxSize()
                         .background(Color.LightGray)
                 ) {
                     when (interfaces) {
-                        /*is BaseModel.Error -> {
-                            Text(text = "Base Model Error: ${interfaces.error}")
-                        }*/
-
-                       /* is BaseModel.Loading -> {
-                            //    Text(text = "Base Model Loading")
-                            //        LinearProgressIndicator
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                        }*/
 
                         is BaseModel.Success -> {
                             LazyColumn {
