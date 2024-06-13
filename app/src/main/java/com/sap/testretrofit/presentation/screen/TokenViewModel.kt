@@ -1,16 +1,11 @@
 package com.sap.testretrofit.presentation.screen
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sap.cpi_monitor.domain.resource.BaseModel
 import com.sap.cpi_monitor.sessionManager.SessionManager
-import com.sap.testretrofit.TenantData
-import com.sap.testretrofit.data.remote.AuthRepository
 import com.sap.testretrofit.data.remote.MessageProcessingLogResponseDto
-import com.sap.testretrofit.data.remote.MonitorRepository
 import com.sap.testretrofit.repositories.CpiRepo
 import com.sap.testretrofit.repositories.FilterBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,6 +31,9 @@ class TokenViewModel(private val repo: CpiRepo): ViewModel(), KoinComponent {
     private val _cpiMoniFlow : MutableStateFlow<BaseModel<MessageProcessingLogResponseDto>?> = MutableStateFlow(BaseModel.Loading)
     val cpiMoniFlow = _cpiMoniFlow.asStateFlow()
 
+    private val _isRefreshStateiFlow : MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isRefreshStateiFlow = _isRefreshStateiFlow.asStateFlow()
+
 /*    init {
         Log.d("ViewModel", "Starting TokenViewModel")
         viewModelScope.launch {
@@ -60,7 +58,7 @@ class TokenViewModel(private val repo: CpiRepo): ViewModel(), KoinComponent {
         Log.d("ViewModel","ending getMoni")
     }*/
 
-    fun getMoni2(top: Int, filter: FilterBuilder) {
+    fun getMoniInterfaces(top: Int, filter: FilterBuilder) {
 /*        repo.getCPIMessages(maxNumber = 50, filter = "Status eq 'COMPLETED' or Status eq 'FAILED' or Status eq 'RETRY'").also {
             baseModel ->  _cpiMoniFlow.update { baseModel }
         }*/
@@ -68,10 +66,27 @@ class TokenViewModel(private val repo: CpiRepo): ViewModel(), KoinComponent {
             sessionManager.updateAccessToken()
             val token = sessionManager.fetchAuthToken()
             Log.d("ViewModel", "token: $token ")
+
             repo.getCPIMessages(maxNumber = top, filter = filter.buildTotalFilter()).also {
                     baseModel ->  _cpiMoniFlow.update { baseModel }
             }
             Log.d("ViewModel","ending getMoni")
+        }
+    }
+    fun getMoniRefresh(top: Int, filter: FilterBuilder) {
+        /*        repo.getCPIMessages(maxNumber = 50, filter = "Status eq 'COMPLETED' or Status eq 'FAILED' or Status eq 'RETRY'").also {
+                    baseModel ->  _cpiMoniFlow.update { baseModel }
+                }*/
+        viewModelScope.launch {
+            _isRefreshStateiFlow.update { true }
+            sessionManager.updateAccessToken()
+            val token = sessionManager.fetchAuthToken()
+            Log.d("ViewModel", "token: $token ")
+            repo.getCPIMessages(maxNumber = top, filter = filter.buildTotalFilter()).also {
+                    baseModel ->  _cpiMoniFlow.update { baseModel }
+            }
+            _isRefreshStateiFlow.update { false }
+            Log.d("ViewModel","ending getMoni Refresh")
         }
     }
 }

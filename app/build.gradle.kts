@@ -68,7 +68,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     // Material 3
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
+ //   implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
     // kotlinx serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")

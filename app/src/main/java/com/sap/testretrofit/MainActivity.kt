@@ -12,12 +12,15 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
@@ -35,8 +38,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.sap.cpi_monitor.domain.resource.BaseModel
 import com.sap.testretrofit.presentation.screen.CardInterfaceDisplay
 import com.sap.testretrofit.presentation.screen.TokenViewModel
-import com.sap.testretrofit.presentation.ui.theme.LightBlue
-import com.sap.testretrofit.presentation.ui.theme.LightGrey
 import com.sap.testretrofit.presentation.ui.theme.TestRetrofitTheme
 import com.sap.testretrofit.repositories.FilterBuilder
 import com.sap.testretrofit.repositories.Status
@@ -74,6 +75,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun InitData(modifier: Modifier = Modifier, viewModel: TokenViewModel) {
         val interfaces = viewModel.cpiMoniFlow.collectAsState().value
+        val isRefreshing = viewModel.isRefreshStateiFlow.collectAsState()
 
         var top by remember {
             mutableStateOf(setValue("20"))
@@ -142,7 +144,12 @@ class MainActivity : ComponentActivity() {
                 )
             )
         }*/
-        lateinit var filterBuilder: FilterBuilder
+        var filterBuilder: FilterBuilder = FilterBuilder(
+            startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
+            endDateTime = FilterBuilder.getDateTimeFromString("$endDate $endTime"),
+            nameFlow = nameFlow,
+            status = status
+        )
         LaunchedEffect(top, startDate, endDate, status, nameFlow) {
             Log.d("Launched Effect", "First Launched Effect entering")
             if (top.toInt() > 0 && status.isNotEmpty()) {
@@ -153,7 +160,7 @@ class MainActivity : ComponentActivity() {
                     nameFlow = nameFlow,
                     status = status
                 )
-                viewModel.getMoni2(top.toInt(), filter = filterBuilder)
+                viewModel.getMoniInterfaces(top.toInt(), filter = filterBuilder)
             } else {
                 if (status.isNotEmpty()) {
                     // show popup TODO
@@ -474,6 +481,8 @@ class MainActivity : ComponentActivity() {
                 enter = fadeIn() + scaleIn(),
                 exit = fadeOut() + scaleOut()
             ) {
+                //var isRefreshing by remember {  mutableStateOf(false) }
+                val state: LazyListState = rememberLazyListState()
                 //TODO complete pull to refresh
                 val pullToRefreshState: PullToRefreshState = rememberPullToRefreshState()
                 Box(
@@ -485,12 +494,29 @@ class MainActivity : ComponentActivity() {
                     when (interfaces) {
 
                         is BaseModel.Success -> {
-                            LazyColumn {
+                            LazyColumn(
+                                state = state
+                            ) {
                                 items(interfaces.data.d.results) { item ->
                                     /*Text(text = item.integrationFlowName)*/
                                     CardInterfaceDisplay(state = item)
                                 }
                             }
+                            if (pullToRefreshState.isRefreshing) {
+                                LaunchedEffect(true) {
+                                    viewModel.getMoniRefresh(top.toInt(), filter = filterBuilder)
+                                }
+                            }
+                            LaunchedEffect(isRefreshing.value) {
+                                if (isRefreshing.value)
+                                    pullToRefreshState.startRefresh()
+                                else
+                                    pullToRefreshState.endRefresh()
+                            }
+                            PullToRefreshContainer(
+                                state = pullToRefreshState,
+                                modifier = Modifier.align(Alignment.TopCenter)
+                            )
                         }
 
                         else -> {
