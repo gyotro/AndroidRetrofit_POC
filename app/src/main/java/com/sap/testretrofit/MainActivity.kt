@@ -492,7 +492,6 @@ class MainActivity : ComponentActivity() {
                         .background(Color.LightGray)
                 ) {
                     when (interfaces) {
-
                         is BaseModel.Success -> {
                             LazyColumn(
                                 state = state
@@ -513,10 +512,12 @@ class MainActivity : ComponentActivity() {
                                 else
                                     pullToRefreshState.endRefresh()
                             }
-                            PullToRefreshContainer(
-                                state = pullToRefreshState,
-                                modifier = Modifier.align(Alignment.TopCenter)
-                            )
+                            if (isRefreshing.value) {
+                                PullToRefreshContainer(
+                                    state = pullToRefreshState,
+                                    modifier = Modifier.align(Alignment.TopCenter)
+                                )
+                            }
                         }
 
                         else -> {
