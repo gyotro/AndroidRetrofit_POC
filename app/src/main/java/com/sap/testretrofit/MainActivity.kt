@@ -24,6 +24,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -77,11 +78,11 @@ class MainActivity : ComponentActivity() {
         val interfaces = viewModel.cpiMoniFlow.collectAsState().value
         val isRefreshing = viewModel.isRefreshStateiFlow.collectAsState()
 
-        var top by remember {
+        var top by rememberSaveable {
             mutableStateOf(setValue("20"))
         }
 
-        var nameFlow by remember {
+        var nameFlow by rememberSaveable {
             mutableStateOf("")
         }
 
@@ -90,16 +91,16 @@ class MainActivity : ComponentActivity() {
              mutableStateOf(yesterdayDT)
          }*/
         val yesterdayDate = LocalDate.now().minusDays(1)
-        var startDate by remember {
+        var startDate by rememberSaveable {
             mutableStateOf(yesterdayDate.toString())
         }
 
         val currentDate = LocalDate.now()
-        var endDate by remember {
+        var endDate by rememberSaveable {
             mutableStateOf(currentDate.toString())
         }
         val currentTime = LocalTime.now().truncatedTo(ChronoUnit.SECONDS)
-        var endTime by remember {
+        var endTime by rememberSaveable {
             mutableStateOf(currentTime.toString())
         }
 
@@ -131,10 +132,10 @@ class MainActivity : ComponentActivity() {
         )
         var endTimeOpened by remember { mutableStateOf(false) }
 
-        var status = remember {
+        var status = rememberSaveable {
             mutableListOf(Status.COMPLETED, Status.FAILED, Status.PROCESSING, Status.RETRY, Status.CANCELED)
         }
-        /*val filterBuilder by remember {
+        var filterBuilder by remember {
             mutableStateOf(
                 FilterBuilder(
                     startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
@@ -143,13 +144,13 @@ class MainActivity : ComponentActivity() {
                     status = status
                 )
             )
-        }*/
-        var filterBuilder: FilterBuilder = FilterBuilder(
+        }
+/*        var filterBuilder: FilterBuilder = FilterBuilder(
             startDateTime = FilterBuilder.getDateTimeFromString("$startDate $startTime"),
             endDateTime = FilterBuilder.getDateTimeFromString("$endDate $endTime"),
             nameFlow = nameFlow,
             status = status
-        )
+        )*/
         LaunchedEffect(top, startDate, endDate, status, nameFlow) {
             Log.d("Launched Effect", "First Launched Effect entering")
             if (top.toInt() > 0 && status.isNotEmpty()) {
