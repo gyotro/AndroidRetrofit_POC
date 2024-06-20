@@ -44,6 +44,7 @@ import com.sap.testretrofit.repositories.FilterBuilder
 import com.sap.testretrofit.repositories.Status
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
@@ -105,8 +106,8 @@ class MainActivity : ComponentActivity() {
         }
 
         val startDateState = rememberDatePickerState(
-            initialDisplayedMonthMillis = yesterdayDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-            initialSelectedDateMillis = yesterdayDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            initialDisplayedMonthMillis = LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+            initialSelectedDateMillis = LocalDateTime.now().minusDays(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         )
         var startDateOpened by remember { mutableStateOf(false) }
 
@@ -121,8 +122,8 @@ class MainActivity : ComponentActivity() {
         var startTimeOpened by remember { mutableStateOf(false) }
 
         var endDateState = rememberDatePickerState(
-            initialDisplayedMonthMillis = currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-            initialSelectedDateMillis = currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            initialDisplayedMonthMillis = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+            initialSelectedDateMillis = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         )
         var endDateOpened by remember { mutableStateOf(false) }
 
@@ -312,6 +313,11 @@ class MainActivity : ComponentActivity() {
                             Button(onClick = { endDateOpened = false }) {
                                 Text(text = "Confirm")
                             }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { endDateOpened = false }) {
+                                Text(text = "Cancel")
+                            }
                         }) {
                         DatePicker(state = endDateState)
                         endDate =
@@ -419,6 +425,11 @@ class MainActivity : ComponentActivity() {
                         confirmButton = {
                             Button(onClick = { startDateOpened = false }) {
                                 Text(text = "Confirm")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { startDateOpened = false }) {
+                                Text(text = "Cancel")
                             }
                         }) {
                         DatePicker(state = startDateState)
