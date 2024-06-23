@@ -1,10 +1,19 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("androidx.room")
+    id("com.google.devtools.ksp")
     kotlin("plugin.serialization") version "1.6.0" // Use the Kotlin serialization plugin
 }
+/*room {
+    schemaDirectory("$projectDir/schemas")
+}*/
 
 android {
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
     namespace = "com.sap.testretrofit"
     compileSdk = 34
 
@@ -20,6 +29,7 @@ android {
             useSupportLibrary = true
         }
     }
+
 
     buildTypes {
         release {
@@ -37,6 +47,9 @@ android {
     buildFeatures {
         compose = true
     }
+    sourceSets {
+        getByName("main").java.srcDirs("build/generated/ksp/main/kotlin")
+    }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.2"
     }
@@ -45,9 +58,19 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
+
+    // Room  DB
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.8.21-1.0.11")
+
+    // To use Kotlin Symbol Processing (KSP)
+    //ksp("androidx.room:room-compiler:$room_version")
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
@@ -88,3 +111,7 @@ dependencies {
 /*repositories {
     mavenCentral()
 }*/
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
