@@ -1,4 +1,4 @@
-package com.sap.testretrofit.presentation.screen
+package com.sap.testretrofit.presentation.screen.monitorUI
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.sap.cpi_monitor.domain.resource.BaseModel
 import com.sap.cpi_monitor.sessionManager.SessionManager
 import com.sap.testretrofit.data.remote.MessageProcessingLogResponseDto
-import com.sap.testretrofit.repositories.CpiRepo
-import com.sap.testretrofit.repositories.FilterBuilder
+import com.sap.testretrofit.repositories.http.CpiRepo
+import com.sap.testretrofit.utils.FilterBuilder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

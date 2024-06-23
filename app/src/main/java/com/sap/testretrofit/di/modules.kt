@@ -1,20 +1,18 @@
 package com.sap.testretrofit.di
 
 import android.util.Log
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.google.gson.Gson
 import com.sap.cpi_monitor.sessionManager.AuthInterceptor
 import com.sap.cpi_monitor.sessionManager.SessionManager
 import com.sap.testretrofit.TenantData
 import com.sap.testretrofit.data.remote.AuthRepository
 import com.sap.testretrofit.data.remote.MonitorRepository
-import com.sap.testretrofit.presentation.screen.TokenViewModel
-import com.sap.testretrofit.repositories.CpiRepo
-import com.sap.testretrofit.repositories.CpiRepoImpl
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
+import com.sap.testretrofit.presentation.screen.monitorUI.TokenViewModel
+import com.sap.testretrofit.repositories.http.CpiRepo
+import com.sap.testretrofit.repositories.http.CpiRepoImpl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -79,6 +77,16 @@ fun provideCPIMonitor(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ):
 fun repoCPI(CpiApi: MonitorRepository): CpiRepo {
     Log.d("NetworkDI","Starting repoCPI")
     return CpiRepoImpl(api = CpiApi)
+}
+
+val gson = module {
+    single { Gson() }
+}
+
+val databaseModule = module {
+    single { provideDatabase(androidContext()) }
+    single { provideTenantDao(get()) }
+    single { provideTenantRepo(get()) }
 }
 
 val appModule = module {

@@ -1,4 +1,4 @@
-package com.sap.testretrofit.repositories
+package com.sap.testretrofit.utils
 
 enum class Status {
     COMPLETED,

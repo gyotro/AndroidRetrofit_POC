@@ -1,4 +1,4 @@
-package com.sap.testretrofit.repositories
+package com.sap.testretrofit.repositories.http
 
 import com.sap.cpi_monitor.domain.resource.BaseModel
 import com.sap.testretrofit.data.remote.MessageProcessingLogResponseDto

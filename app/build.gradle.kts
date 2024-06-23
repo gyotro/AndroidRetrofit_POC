@@ -5,9 +5,6 @@ plugins {
     id("com.google.devtools.ksp")
     kotlin("plugin.serialization") version "1.6.0" // Use the Kotlin serialization plugin
 }
-/*room {
-    schemaDirectory("$projectDir/schemas")
-}*/
 
 android {
     room {

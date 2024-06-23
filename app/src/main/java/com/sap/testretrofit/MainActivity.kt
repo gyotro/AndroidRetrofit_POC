@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.sap.cpi_monitor.domain.resource.BaseModel
-import com.sap.testretrofit.presentation.screen.CardInterfaceDisplay
-import com.sap.testretrofit.presentation.screen.TokenViewModel
+import com.sap.testretrofit.presentation.screen.monitorUI.CardInterfaceDisplay
+import com.sap.testretrofit.presentation.screen.monitorUI.TokenViewModel
 import com.sap.testretrofit.presentation.ui.theme.TestRetrofitTheme
-import com.sap.testretrofit.repositories.FilterBuilder
-import com.sap.testretrofit.repositories.Status
+import com.sap.testretrofit.utils.FilterBuilder
+import com.sap.testretrofit.utils.Status
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
