@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
     @Preview
     fun ChooseTenantScreen() {
         Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
-            val viewModel = koinViewModel<InsertTenantViewModel>()
-            TenantDataScreen(viewModel = viewModel)
+            val viewModelTenant = koinViewModel<InsertTenantViewModel>()
+            TenantDataScreen(viewModel = viewModelTenant)
         }
     }
 
@@ -42,8 +42,8 @@ class MainActivity : ComponentActivity() {
     @Preview
     fun MonitorScreen() {
         Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
-            val viewModel = koinViewModel<TokenViewModel>()
-            MonitorDataScreen(viewModel = viewModel)
+            val viewModelMonitor = koinViewModel<TokenViewModel>()
+            MonitorDataScreen(viewModel = viewModelMonitor)
         }
     }
 

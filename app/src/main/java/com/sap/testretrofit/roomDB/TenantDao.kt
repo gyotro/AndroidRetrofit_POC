@@ -10,16 +10,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TenantDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun saveTenant(tenant: TenantEntity)
+    fun saveTenant(tenant: TenantEntity)
 
-    @Query("SELECT * FROM $TENANT_TABLE ORDER BY id ASC")
-    fun getAlLTenants(): Flow<MutableList<TenantEntity>>
+    @Query("SELECT * FROM TENANT_TABLE ORDER BY id ASC")
+    fun getAlLTenants(): Flow<List<TenantEntity>>
 
     @Query("SELECT * FROM $TENANT_TABLE WHERE id = :id")
-    suspend fun getTenant(id: Int): TenantEntity
+    fun getTenant(id: Int): TenantEntity
 
     @Query("DELETE FROM $TENANT_TABLE WHERE id = :id")
-    suspend fun deleteTenant(id: Int)
+    fun deleteTenant(id: Int)
 
 
 }

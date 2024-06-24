@@ -92,13 +92,9 @@ val gson = module {
 
 val databaseModule = module {
     single {
-        Room.databaseBuilder(
-            get(),
-            TenantDatabase::class.java,
-            DB_NAME
-        ).build()
-    }
-    single { provideTenantDao(get()) } bind TenantDao::class
+        provideDatabase(get())
+    } bind TenantDatabase::class
+//    single { provideTenantDao(get()) } bind TenantDao::class
     single { provideTenantRepo(get()) } bind DatabaseRepo::class
     viewModel<InsertTenantViewModel> { InsertTenantViewModel(get()) }
 }
