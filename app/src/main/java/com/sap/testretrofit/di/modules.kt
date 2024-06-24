@@ -1,15 +1,22 @@
 package com.sap.testretrofit.di
 
 import android.util.Log
+import androidx.room.Room
 import com.google.gson.Gson
 import com.sap.cpi_monitor.sessionManager.AuthInterceptor
 import com.sap.cpi_monitor.sessionManager.SessionManager
 import com.sap.testretrofit.TenantData
 import com.sap.testretrofit.data.remote.AuthRepository
 import com.sap.testretrofit.data.remote.MonitorRepository
+import com.sap.testretrofit.presentation.screen.dbUI.InsertTenantViewModel
 import com.sap.testretrofit.presentation.screen.monitorUI.TokenViewModel
+import com.sap.testretrofit.repositories.db.DatabaseRepo
 import com.sap.testretrofit.repositories.http.CpiRepo
 import com.sap.testretrofit.repositories.http.CpiRepoImpl
+import com.sap.testretrofit.roomDB.TenantDao
+import com.sap.testretrofit.roomDB.TenantDatabase
+import com.sap.testretrofit.utils.DB_Constants.DB_NAME
+import com.sap.testretrofit.utils.DB_Constants.TENANT_TABLE
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -84,9 +91,16 @@ val gson = module {
 }
 
 val databaseModule = module {
-    single { provideDatabase(androidContext()) }
-    single { provideTenantDao(get()) }
-    single { provideTenantRepo(get()) }
+    single {
+        Room.databaseBuilder(
+            get(),
+            TenantDatabase::class.java,
+            DB_NAME
+        ).build()
+    }
+    single { provideTenantDao(get()) } bind TenantDao::class
+    single { provideTenantRepo(get()) } bind DatabaseRepo::class
+    viewModel<InsertTenantViewModel> { InsertTenantViewModel(get()) }
 }
 
 val appModule = module {
