@@ -2,14 +2,25 @@ package com.sap.testretrofit.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.sap.testretrofit.R
+
+
+val ubuntuFont = FontFamily(listOf(
+    Font(R.font.ubuntu)
+))
+
+val sap_fiori = FontFamily(listOf(
+    Font(R.font.sapfiori)
+))
 
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = sap_fiori,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
