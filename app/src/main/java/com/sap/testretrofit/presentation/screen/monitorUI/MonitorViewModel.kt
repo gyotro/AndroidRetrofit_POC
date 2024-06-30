@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class TokenViewModel(private val repo: CpiRepo): ViewModel(), KoinComponent {
+class MonitorViewModel(private val repo: CpiRepo): ViewModel(), KoinComponent {
 
     private val sessionManager: SessionManager by inject()
 

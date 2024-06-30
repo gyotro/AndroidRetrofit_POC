@@ -106,6 +106,21 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    // voyager
+    val voyagerVersion = "1.1.0-beta02"
+    // For screen transitions
+    implementation("cafe.adriel.voyager:voyager-transitions:$voyagerVersion") // Or latest version
+
+    // For tab-based navigation
+    implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion") // Or latest version
+
+    // For Android integration (if applicable)
+    implementation("cafe.adriel.voyager:voyager-android:$voyagerVersion")
+
+    // Koin integration
+    implementation("cafe.adriel.voyager:voyager-koin:$voyagerVersion")
+
+
 }
 kapt {
     correctErrorTypes = true

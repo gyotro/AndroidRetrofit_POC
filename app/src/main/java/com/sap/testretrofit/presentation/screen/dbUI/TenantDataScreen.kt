@@ -22,24 +22,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.sap.testretrofit.presentation.ui.theme.DarkBlue
-import com.sap.testretrofit.presentation.ui.theme.LightGrey
+import cafe.adriel.voyager.navigator.Navigator
+import com.sap.testretrofit.presentation.screen.monitorUI.MonitorViewModel
+import com.sap.testretrofit.presentation.screen.navigation.ScreenMonitor
 import com.sap.testretrofit.presentation.ui.theme.sap_fiori
-import com.sap.testretrofit.presentation.ui.theme.ubuntuFont
 import com.sap.testretrofit.roomDB.TenantEntity
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun TenantDataScreen(viewModel: InsertTenantViewModel) {
-
+fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
+    val viewModelMonitor = koinViewModel<MonitorViewModel>()
     val tenants by viewModel.tenantFlow.collectAsState()
 
     val(dialogOpen, setDialogOpen) = remember {
@@ -112,27 +110,6 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel) {
                 Icon(Icons.Default.Add, contentDescription = "Add Tenant")
             }
         }) { paddings ->
-        /*Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)) {
-            Text(text = "Add or Choose a Cloud Integration tenant To Monitor",
-                modifier =Modifier.padding(10.dp),
-                color = Color.DarkGray,
-                fontSize = TextUnit.Unspecified,
-//                fontStyle = null,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Cursive,
-//                //  letterSpacing =,
-//                textDecoration = null,
-                textAlign = TextAlign.Center,
-//                //  lineHeight =,
-//                // overflow =,
-//                softWrap = false,
-//                maxLines = 0,
-//                minLines = 0,
-//                //   onTextLayout = { -> },
-//                style = TextStyle.Default.fontStyle
-            )*/
             Box(modifier = Modifier
          //       .padding(paddings)
                 .fillMaxSize(),
@@ -165,7 +142,7 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel) {
                             items = tenants.sortedBy { it.name },
                             key = { it.id }
                         ){ tenant ->
-                            TenantItem(tenant, { }, { viewModel.deleteTenant(tenant.id) })
+                            TenantItem(tenant, { navigator?.push(ScreenMonitor(viewModelMonitor)) }, { viewModel.deleteTenant(tenant.id) })
                         }
                     }
                 }
