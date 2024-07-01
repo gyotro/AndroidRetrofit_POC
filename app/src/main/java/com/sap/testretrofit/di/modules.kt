@@ -4,7 +4,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.sap.cpi_monitor.sessionManager.AuthInterceptor
 import com.sap.cpi_monitor.sessionManager.SessionManager
-import com.sap.testretrofit.TenantData
+import com.sap.testretrofit.TenantDataDefault
 import com.sap.testretrofit.data.remote.AuthRepository
 import com.sap.testretrofit.data.remote.MonitorRepository
 import com.sap.testretrofit.presentation.screen.dbUI.InsertTenantViewModel
@@ -43,7 +43,7 @@ fun provideCPIAuth(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ): Au
     logging.setLevel(HttpLoggingInterceptor.Level.BODY);
     Log.d("NetworkDI","Starting provideCPIAuth")
     return builder
-        .baseUrl(TenantData.URL_AUTH)
+        .baseUrl(TenantDataDefault.URL_AUTH)
         .client(okHttp.addInterceptor(logging).build())
         .build()
         .create(AuthRepository::class.java)
@@ -70,7 +70,7 @@ fun provideCPIMonitor(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ):
     logging.setLevel(HttpLoggingInterceptor.Level.BODY);
     Log.d("NetworkDI","Starting provideCPIMonitor")
     return builder
-        .baseUrl(TenantData.URL_MONI)
+        .baseUrl(TenantDataDefault.URL_MONI)
         .client(okHttp.addInterceptor(authInterceptor).addInterceptor(logging).build())
         .build()
         .create(MonitorRepository::class.java)
@@ -98,7 +98,7 @@ val appModule = module {
     single { provideRetrofitBuilder() }
     factory { provideHttpClientBuilder() }
     single { provideCPIAuth(get(), get()) } bind AuthRepository::class
-    single { SessionManager(get(), get()) }
+    single { SessionManager( get() ) }
     single { provideCPIMonitor(get(), get()) } bind MonitorRepository::class
     single { repoCPI(get()) } bind CpiRepo::class
     viewModel<MonitorViewModel> { MonitorViewModel(get()) }

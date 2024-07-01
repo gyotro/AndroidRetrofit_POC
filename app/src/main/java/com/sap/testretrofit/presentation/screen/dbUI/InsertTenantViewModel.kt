@@ -1,21 +1,18 @@
 package com.sap.testretrofit.presentation.screen.dbUI
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
-import com.sap.testretrofit.TenantData
+import com.sap.testretrofit.TenantDataDefault
 import com.sap.testretrofit.repositories.db.DatabaseRepo
 import com.sap.testretrofit.roomDB.TenantEntity
 import com.sap.testretrofit.roomDB.TenantJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -30,10 +27,10 @@ class InsertTenantViewModel(private val repo: DatabaseRepo): ViewModel(), KoinCo
     init {
         val tenant = TenantEntity(
             name = "Default tenant",
-            clientId = TenantData.clientID,
-            clientSecret = TenantData.clientSecret,
-            urlAuth = TenantData.URL_AUTH,
-            urlMoni = TenantData.URL_MONI
+            clientId = TenantDataDefault.clientID,
+            clientSecret = TenantDataDefault.clientSecret,
+            urlAuth = TenantDataDefault.URL_AUTH,
+            urlMoni = TenantDataDefault.URL_MONI
         )
         Log.d("TenantViewModel", "init clause")
  //       insertTenant(tenant)

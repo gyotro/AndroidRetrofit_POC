@@ -10,7 +10,7 @@ import com.sap.testretrofit.presentation.screen.monitorUI.MonitorViewModel
 import com.sap.testretrofit.roomDB.TenantEntity
 
 
-class ScreenMonitor(private val viewModel: MonitorViewModel, tenant: TenantEntity): Screen {
+class ScreenMonitor(private val viewModel: MonitorViewModel): Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {

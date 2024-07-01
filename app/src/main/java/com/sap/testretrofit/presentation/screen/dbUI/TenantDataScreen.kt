@@ -183,7 +183,7 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
                         key = { it.id }
                     ) { tenant ->
                         TenantItem(tenant, {
-                            navigator?.push(ScreenMonitor(viewModel = viewModelMonitor, tenant))
+                            navigator?.push(ScreenMonitor(viewModel = viewModelMonitor))
                         }, { viewModel.deleteTenant(tenant.id) })
                     }
                 }
