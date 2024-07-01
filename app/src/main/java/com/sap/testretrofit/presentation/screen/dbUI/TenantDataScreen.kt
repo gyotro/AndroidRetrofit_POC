@@ -21,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +43,7 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel) {
 
     val tenants by viewModel.tenantFlow.collectAsState()
 
-    val(dialogOpen, setDialogOpen) = remember {
+    val (dialogOpen, setDialogOpen) = remember {
         mutableStateOf(false)
     }
 
@@ -62,18 +63,18 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                  OutlinedTextField(
-                      value = name,
-                      onValueChange = { setName(it) },
-                      modifier = Modifier.fillMaxWidth(),
-                      maxLines = 1,
-                      label = {
-                          Text(
-                                  text = "Name of the tenant",
-                                  color = Color.White
-                              )
-                      }
-                  )
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { setName(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 1,
+                    label = {
+                        Text(
+                            text = "Name of the tenant",
+                            color = Color.White
+                        )
+                    }
+                )
                 Spacer(modifier = Modifier.height(6.dp))
                 OutlinedTextField(
                     value = key,
@@ -88,14 +89,15 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel) {
                     }
                 )
                 Spacer(modifier = Modifier.height(18.dp))
-                Button(onClick = {
-                    if (name.isNotEmpty() && key.isNotEmpty()) {
-                        viewModel.parseJsonKeyAndStoreTenant(name, key)
-                        setDialogOpen(false)
-                    }
-                }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red
-                ),
+                Button(
+                    onClick = {
+                        if (name.isNotEmpty() && key.isNotEmpty()) {
+                            viewModel.parseJsonKeyAndStoreTenant(name, key)
+                            setDialogOpen(false)
+                        }
+                    }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red
+                    ),
                     shape = RoundedCornerShape(5.dp)
                 ) {
                     Text(text = "Submit", color = Color.White, fontFamily = sap_fiori)
@@ -108,7 +110,11 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel) {
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.secondary,
         floatingActionButton = {
-            FloatingActionButton(onClick = { setDialogOpen(true) }, containerColor = Color.LightGray, contentColor = MaterialTheme.colorScheme.primary) {
+            FloatingActionButton(
+                onClick = { setDialogOpen(true) },
+                containerColor = Color.LightGray,
+                contentColor = MaterialTheme.colorScheme.primary
+            ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Tenant")
             }
         }) { paddings ->
@@ -133,68 +139,87 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel) {
 //                //   onTextLayout = { -> },
 //                style = TextStyle.Default.fontStyle
             )*/
-            Box(modifier = Modifier
-         //       .padding(paddings)
+        Box(
+            modifier = Modifier
+                //       .padding(paddings)
                 .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            )
-            {
-                AnimatedVisibility(visible = tenants.isEmpty(),
-                    enter = scaleIn() + fadeIn(),
-                    exit = scaleOut() + fadeOut()
+            contentAlignment = Alignment.Center
+        )
+        {
+            AnimatedVisibility(
+                visible = tenants.isEmpty(),
+                enter = scaleIn() + fadeIn(),
+                exit = scaleOut() + fadeOut()
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center).padding(15.dp),
+                    text = "Add a Cloud Integration tenant To Monitor",
+                    color = Color.DarkGray,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = sap_fiori,
+                    fontSize = 22.sp
+                )
+            }
+            AnimatedVisibility(
+                visible = tenants.isNotEmpty(),
+                enter = scaleIn() + fadeIn(),
+                exit = scaleOut() + fadeOut()
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            bottom = paddings.calculateBottomPadding() + 8.dp,
+                            top = 8.dp,
+                            end = 8.dp,
+                            start = 8.dp,
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(text = "Add a Cloud Integration tenant To Monitor",
-                        color = Color.DarkGray,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = sap_fiori,
-                        fontSize =22.sp)
-                }
-                AnimatedVisibility(visible = tenants.isNotEmpty(),
-                    enter = scaleIn() + fadeIn(),
-                    exit = scaleOut() + fadeOut()
-                ) {
-                    LazyColumn(modifier = Modifier.fillMaxSize().padding(
-                        bottom = paddings.calculateBottomPadding()+8.dp,
-                        top = 8.dp,
-                        end = 8.dp,
-                        start = 8.dp,
-                    ),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                        items(
-                            items = tenants.sortedBy { it.name },
-                            key = { it.id }
-                        ){ tenant ->
-                            TenantItem(tenant, { }, { viewModel.deleteTenant(tenant.id) })
-                        }
+                    items(
+                        items = tenants.sortedBy { it.name.lowercase() },
+                        key = { it.id }
+                    ) { tenant ->
+                        TenantItem(tenant, { }, { viewModel.deleteTenant(tenant.id) })
                     }
                 }
             }
-      //      Spacer(modifier = Modifier.weight(1f))
-
         }
+        //      Spacer(modifier = Modifier.weight(1f))
+
     }
+}
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick:() -> Unit, onDelete:() -> Unit){
-
-    Card(modifier = Modifier.fillMaxWidth()
-        .background(Color.DarkGray)
-        .clickable {
-            onClick()
-        }
-        .animateItemPlacement(
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        )
-    )) {
+fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick: () -> Unit, onDelete: () -> Unit) {
+    Card(
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(
+                elevation = 100.dp,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color.Black,
+                ambientColor = Color.Black
+            )
+            .background(Color.DarkGray)
+            .clickable {
+                onClick()
+            }
+            .animateItemPlacement(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )
+    )
+    {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(5.dp))
+                .clip( RoundedCornerShape(5.dp) )
                 .padding(
                     horizontal = 8.dp,
                     vertical = 16.dp
@@ -203,7 +228,7 @@ fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick:() -> Unit, onD
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
 
                 Column {
@@ -218,19 +243,21 @@ fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick:() -> Unit, onD
             }
             Box(
                 modifier = Modifier
-                    .size(25.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary)
                     .padding(4.dp),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     Icons.Default.Delete,
                     tint = Color.White,
-                    contentDescription = null,
-                    modifier = Modifier.clickable {
-                        onDelete()
-                    })
+                    contentDescription = "Delete Tenant",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable {
+                            onDelete()
+                        })
             }
         }
 
