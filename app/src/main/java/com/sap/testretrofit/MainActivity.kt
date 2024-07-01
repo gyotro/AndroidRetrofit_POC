@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.sap.testretrofit.presentation.screen.dbUI.InsertTenantViewModel
 import com.sap.testretrofit.presentation.screen.dbUI.TenantDataScreen
 import com.sap.testretrofit.presentation.screen.monitorUI.MonitorDataScreen
@@ -35,7 +36,7 @@ class MainActivity : ComponentActivity() {
     fun ChooseTenantScreen() {
         Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
             val viewModelTenant = koinViewModel<InsertTenantViewModel>()
-            Navigator(ScreenTenants(viewModelTenant))
+            Navigator(ScreenTenants(viewModelTenant)) { navigator -> SlideTransition(navigator) }
         }
     }
 

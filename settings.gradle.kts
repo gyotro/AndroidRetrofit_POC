@@ -13,12 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-/*buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}*/
 
 rootProject.name = "TestRetrofit"
 include(":app")

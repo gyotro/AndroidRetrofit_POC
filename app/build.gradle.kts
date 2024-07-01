@@ -114,9 +114,6 @@ dependencies {
     // For tab-based navigation
     implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion") // Or latest version
 
-    // For Android integration (if applicable)
- //   implementation("cafe.adriel.voyager:voyager-android:$voyagerVersion")
-
     // Koin integration
     implementation("cafe.adriel.voyager:voyager-koin:$voyagerVersion")
 

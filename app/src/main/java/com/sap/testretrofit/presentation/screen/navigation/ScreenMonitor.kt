@@ -7,9 +7,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.sap.testretrofit.presentation.screen.monitorUI.MonitorDataScreen
 import com.sap.testretrofit.presentation.screen.monitorUI.MonitorViewModel
+import com.sap.testretrofit.roomDB.TenantEntity
 
 
-class ScreenMonitor(private val viewModel: MonitorViewModel): Screen {
+class ScreenMonitor(private val viewModel: MonitorViewModel, tenant: TenantEntity): Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {

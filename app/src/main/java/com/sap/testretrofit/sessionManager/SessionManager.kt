@@ -20,7 +20,7 @@ class SessionManager (private val context: Context, private val apiAuth: AuthRep
         const val USER_TOKEN = "user_token"
     }
     private var token: String? = null
-    private val scope = CoroutineScope(Dispatchers.IO)
+   // private val scope = CoroutineScope(Dispatchers.IO)
     init {
         Log.d("Session Manager", "Starting Session Manager")
     }
@@ -48,7 +48,6 @@ class SessionManager (private val context: Context, private val apiAuth: AuthRep
             editor.putString(USER_TOKEN, token)
             editor.apply()
             accessTokenExpirationTime += System.currentTimeMillis() // Convert expiresIn to milliseconds
-
     }
 
     /**

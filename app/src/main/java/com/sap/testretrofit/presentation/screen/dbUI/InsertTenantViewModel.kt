@@ -36,7 +36,7 @@ class InsertTenantViewModel(private val repo: DatabaseRepo): ViewModel(), KoinCo
             urlMoni = TenantData.URL_MONI
         )
         Log.d("TenantViewModel", "init clause")
-   //     insertTenant(tenant)
+ //       insertTenant(tenant)
         getAllTenants()
         Log.d("TenantViewModel", "print getAll: ${tenantFlow.value.joinToString()}" )
     }

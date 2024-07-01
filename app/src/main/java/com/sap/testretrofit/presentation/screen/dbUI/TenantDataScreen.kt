@@ -41,7 +41,7 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
     val viewModelMonitor = koinViewModel<MonitorViewModel>()
     val tenants by viewModel.tenantFlow.collectAsState()
 
-    val(dialogOpen, setDialogOpen) = remember {
+    val (dialogOpen, setDialogOpen) = remember {
         mutableStateOf(false)
     }
 
@@ -61,18 +61,18 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                  OutlinedTextField(
-                      value = name,
-                      onValueChange = { setName(it) },
-                      modifier = Modifier.fillMaxWidth(),
-                      maxLines = 1,
-                      label = {
-                          Text(
-                                  text = "Name of the tenant",
-                                  color = Color.White
-                              )
-                      }
-                  )
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { setName(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 1,
+                    label = {
+                        Text(
+                            text = "Name of the tenant",
+                            color = Color.White
+                        )
+                    }
+                )
                 Spacer(modifier = Modifier.height(6.dp))
                 OutlinedTextField(
                     value = key,
@@ -87,14 +87,15 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
                     }
                 )
                 Spacer(modifier = Modifier.height(18.dp))
-                Button(onClick = {
-                    if (name.isNotEmpty() && key.isNotEmpty()) {
-                        viewModel.parseJsonKeyAndStoreTenant(name, key)
-                        setDialogOpen(false)
-                    }
-                }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Red
-                ),
+                Button(
+                    onClick = {
+                        if (name.isNotEmpty() && key.isNotEmpty()) {
+                            viewModel.parseJsonKeyAndStoreTenant(name, key)
+                            setDialogOpen(false)
+                        }
+                    }, modifier = Modifier.fillMaxWidth(), colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red
+                    ),
                     shape = RoundedCornerShape(5.dp)
                 ) {
                     Text(text = "Submit", color = Color.White, fontFamily = sap_fiori)
@@ -107,10 +108,19 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.secondary,
         floatingActionButton = {
-            FloatingActionButton(onClick = { setDialogOpen(true) }, containerColor = Color.LightGray, contentColor = MaterialTheme.colorScheme.primary) {
+            FloatingActionButton(
+                onClick = { setDialogOpen(true) },
+                containerColor = Color.LightGray,
+                contentColor = MaterialTheme.colorScheme.primary
+            ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Tenant")
             }
-        }) { paddings ->
+        },
+/*        topBar = {
+            TopAppBar(
+                title = { Text("Cloud Integration Monitoring App") }
+            )
+        }*/) { paddings ->
         /*Column(modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)) {
@@ -132,66 +142,80 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
 //                //   onTextLayout = { -> },
 //                style = TextStyle.Default.fontStyle
             )*/
-            Box(modifier = Modifier
-         //       .padding(paddings)
+        Box(
+            modifier = Modifier
+                //       .padding(paddings)
                 .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            )
-            {
-                AnimatedVisibility(visible = tenants.isEmpty(),
-                    enter = scaleIn() + fadeIn(),
-                    exit = scaleOut() + fadeOut()
+            contentAlignment = Alignment.Center
+        )
+        {
+            AnimatedVisibility(
+                visible = tenants.isEmpty(),
+                enter = scaleIn() + fadeIn(),
+                exit = scaleOut() + fadeOut()
+            ) {
+                Text(
+                    text = "Add a Cloud Integration tenant To Monitor",
+                    color = Color.DarkGray,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = sap_fiori,
+                    fontSize = 22.sp
+                )
+            }
+            AnimatedVisibility(
+                visible = tenants.isNotEmpty(),
+                enter = scaleIn() + fadeIn(),
+                exit = scaleOut() + fadeOut()
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            bottom = paddings.calculateBottomPadding() + 8.dp,
+                            top = 8.dp,
+                            end = 8.dp,
+                            start = 8.dp,
+                        ),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(text = "Add a Cloud Integration tenant To Monitor",
-                        color = Color.DarkGray,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = sap_fiori,
-                        fontSize =22.sp)
-                }
-                AnimatedVisibility(visible = tenants.isNotEmpty(),
-                    enter = scaleIn() + fadeIn(),
-                    exit = scaleOut() + fadeOut()
-                ) {
-                    LazyColumn(modifier = Modifier.fillMaxSize().padding(
-                        bottom = paddings.calculateBottomPadding()+8.dp,
-                        top = 8.dp,
-                        end = 8.dp,
-                        start = 8.dp,
-                    ),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                        items(
-                            items = tenants.sortedBy { it.name },
-                            key = { it.id }
-                        ){ tenant ->
-                            TenantItem(tenant, {
-                                navigator?.push(ScreenMonitor(viewModel = viewModelMonitor))
-                            }, { viewModel.deleteTenant(tenant.id) })
-                        }
+                    items(
+                        items = tenants.sortedBy { it.name },
+                        key = { it.id }
+                    ) { tenant ->
+                        TenantItem(tenant, {
+                            navigator?.push(ScreenMonitor(viewModel = viewModelMonitor, tenant))
+                        }, { viewModel.deleteTenant(tenant.id) })
                     }
                 }
             }
-      //      Spacer(modifier = Modifier.weight(1f))
-
         }
+        //      Spacer(modifier = Modifier.weight(1f))
+
     }
+}
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick:() -> Unit, onDelete:() -> Unit){
+fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick: () -> Unit, onDelete: () -> Unit) {
 
-    Card(modifier = Modifier.fillMaxWidth()
-        .background(Color.DarkGray)
-        .clickable {
-            onClick()
-        }
-        .animateItemPlacement(
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        )
-    )) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(10.dp)
+            .clickable {
+                onClick()
+            }
+   //         .shadow(elevation = 30.dp, shape = RoundedCornerShape(10.dp), ambientColor = Color.White)
+            .animateItemPlacement(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            ),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.DarkGray),
+        elevation = CardDefaults.cardElevation(30.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -219,7 +243,7 @@ fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick:() -> Unit, onD
             }
             Box(
                 modifier = Modifier
-                    .size(25.dp)
+                    .size(50.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primary)
                     .padding(4.dp),
@@ -234,7 +258,6 @@ fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick:() -> Unit, onD
                     })
             }
         }
-
         Text(
             modifier = Modifier.padding(4.dp),
             text = tenantEntity.date,
