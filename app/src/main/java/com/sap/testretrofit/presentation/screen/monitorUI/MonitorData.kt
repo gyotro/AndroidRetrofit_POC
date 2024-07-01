@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import cafe.adriel.voyager.navigator.Navigator
 import com.sap.cpi_monitor.domain.resource.BaseModel
 import com.sap.testretrofit.utils.FilterBuilder
 import com.sap.testretrofit.utils.Status
@@ -40,7 +41,11 @@ import java.time.temporal.ChronoUnit
 @OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalMaterial3Api
 @Composable
-fun MonitorDataScreen(modifier: Modifier = Modifier, viewModel: TokenViewModel) {
+fun MonitorDataScreen(
+    modifier: Modifier = Modifier,
+    viewModel: MonitorViewModel,
+    navigator: Navigator?
+) {
     val interfaces = viewModel.cpiMoniFlow.collectAsState().value
     val isRefreshing = viewModel.isRefreshStateiFlow.collectAsState()
 

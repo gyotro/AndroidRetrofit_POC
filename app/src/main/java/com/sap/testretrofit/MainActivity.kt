@@ -9,10 +9,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import cafe.adriel.voyager.navigator.Navigator
 import com.sap.testretrofit.presentation.screen.dbUI.InsertTenantViewModel
 import com.sap.testretrofit.presentation.screen.dbUI.TenantDataScreen
 import com.sap.testretrofit.presentation.screen.monitorUI.MonitorDataScreen
-import com.sap.testretrofit.presentation.screen.monitorUI.TokenViewModel
+import com.sap.testretrofit.presentation.screen.monitorUI.MonitorViewModel
+import com.sap.testretrofit.presentation.screen.navigation.ScreenTenants
 import com.sap.testretrofit.presentation.ui.theme.TestRetrofitTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -33,19 +35,20 @@ class MainActivity : ComponentActivity() {
     fun ChooseTenantScreen() {
         Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
             val viewModelTenant = koinViewModel<InsertTenantViewModel>()
-            TenantDataScreen(viewModel = viewModelTenant)
+            Navigator(ScreenTenants(viewModelTenant))
         }
     }
 
+    /*
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     @Preview
     fun MonitorScreen() {
         Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
-            val viewModelMonitor = koinViewModel<TokenViewModel>()
-            MonitorDataScreen(viewModel = viewModelMonitor)
+            val viewModelMonitor = koinViewModel<MonitorViewModel>()
+            MonitorDataScreen(viewModel = viewModelMonitor, navigator = navigator)
         }
-    }
+    }*/
 
 }
 

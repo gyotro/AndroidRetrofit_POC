@@ -1,7 +1,6 @@
 package com.sap.testretrofit.di
 
 import android.util.Log
-import androidx.room.Room
 import com.google.gson.Gson
 import com.sap.cpi_monitor.sessionManager.AuthInterceptor
 import com.sap.cpi_monitor.sessionManager.SessionManager
@@ -9,17 +8,13 @@ import com.sap.testretrofit.TenantData
 import com.sap.testretrofit.data.remote.AuthRepository
 import com.sap.testretrofit.data.remote.MonitorRepository
 import com.sap.testretrofit.presentation.screen.dbUI.InsertTenantViewModel
-import com.sap.testretrofit.presentation.screen.monitorUI.TokenViewModel
+import com.sap.testretrofit.presentation.screen.monitorUI.MonitorViewModel
 import com.sap.testretrofit.repositories.db.DatabaseRepo
 import com.sap.testretrofit.repositories.http.CpiRepo
 import com.sap.testretrofit.repositories.http.CpiRepoImpl
-import com.sap.testretrofit.roomDB.TenantDao
 import com.sap.testretrofit.roomDB.TenantDatabase
-import com.sap.testretrofit.utils.DB_Constants.DB_NAME
-import com.sap.testretrofit.utils.DB_Constants.TENANT_TABLE
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -106,6 +101,6 @@ val appModule = module {
     single { SessionManager(get(), get()) }
     single { provideCPIMonitor(get(), get()) } bind MonitorRepository::class
     single { repoCPI(get()) } bind CpiRepo::class
-    viewModel<TokenViewModel> { TokenViewModel(get()) }
+    viewModel<MonitorViewModel> { MonitorViewModel(get()) }
     Log.d("DI_Modules","Creating View Model")
 }
