@@ -76,12 +76,12 @@ class SessionManager(context: Context) : KoinComponent {
         val apiAuth: AuthRepository by inject()
         try {
             token = apiAuth.getToken(
-/*                getClientId(),
+                getClientId(),
                 getClientSecret(),
-                getGrantType()*/
-                TenantDataDefault.clientID,
+                getGrantType()
+/*                TenantDataDefault.clientID,
                 TenantDataDefault.clientSecret,
-                TenantDataDefault.grant_type
+                TenantDataDefault.grant_type*/
             ).accessToken
         } catch (e: Exception) {
             Log.d("Session Manager", "updateAccessToken Error: ${e.printStackTrace()}")

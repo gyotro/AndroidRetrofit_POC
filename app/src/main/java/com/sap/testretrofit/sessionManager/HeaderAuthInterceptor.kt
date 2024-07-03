@@ -22,21 +22,22 @@ class HeaderAuthInterceptor : Interceptor, KoinComponent {
 
 
         val accessToken = sessionManager.fetchAuthToken()
-        val urlMoni = sessionManager.getUrlMoni()
+        val urlMoni = sessionManager.getUrlMoni().replace("https://","")
 
         val reqHost = originalRequest.url.host
 
         Log.d("AUTH_INTERCEPTOR","Old Host: $reqHost")
 
- /*       val newUrl: HttpUrl = originalRequest.url.newBuilder()
+        val newUrl: HttpUrl = originalRequest.url.newBuilder()
+            .scheme("https")
             .host(urlMoni)
-            .build()*/
+            .build()
 
- //       Log.d("AUTH_INTERCEPTOR","New Host: $newUrl")
+        Log.d("AUTH_INTERCEPTOR","New Host: $newUrl")
 
         // Add the access token to the request header
         val authorizedRequest = originalRequest.newBuilder()
-      //      .url("$urlMoni/api/v1/MessageProcessingLogs")
+            .url(newUrl)
             .header("Authorization", "Bearer $accessToken")
             .build()
         Log.d("AUTH_INTERCEPTOR","Using Token: $accessToken")

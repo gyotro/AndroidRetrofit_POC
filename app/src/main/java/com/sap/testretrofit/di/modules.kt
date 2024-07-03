@@ -47,7 +47,7 @@ fun provideCPIAuth(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder, shar
     return builder
         .baseUrl(TenantDataDefault.URL_AUTH)
         .client(okHttp.addInterceptor(logging)
-     //       .addInterceptor(urlAuthInterceptor)
+            .addInterceptor(urlAuthInterceptor)
             .build())
         .build()
         .create(AuthRepository::class.java)
@@ -74,7 +74,8 @@ fun provideCPIMonitor(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder, s
     logging.setLevel(HttpLoggingInterceptor.Level.BODY);
     Log.d("NetworkDI","Starting provideCPIMonitor")
     return builder
-        .baseUrl(TenantDataDefault.URL_MONI)
+   //     .baseUrl(TenantDataDefault.URL_MONI)
+        .baseUrl("http://127.0.0.1")
         .client(okHttp.addInterceptor(authInterceptor).addInterceptor(logging).build())
         .build()
         .create(MonitorRepository::class.java)
