@@ -1,6 +1,5 @@
 package com.sap.testretrofit.repositories.db
 
-import com.sap.testretrofit.roomDB.TenantDao
 import com.sap.testretrofit.roomDB.TenantDatabase
 import com.sap.testretrofit.roomDB.TenantEntity
 import kotlinx.coroutines.flow.Flow

@@ -27,16 +27,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.navigator.Navigator
+import com.sap.cpi_monitor.sessionManager.SessionManager
 import com.sap.testretrofit.presentation.screen.monitorUI.MonitorViewModel
 import com.sap.testretrofit.presentation.screen.navigation.ScreenMonitor
 import com.sap.testretrofit.presentation.ui.theme.sap_fiori
+import com.sap.testretrofit.roomDB.TenantDBtoSharedPref_mapper
 import com.sap.testretrofit.roomDB.TenantEntity
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
+fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?, sharedPreferences: SessionManager) {
 
     val viewModelMonitor = koinViewModel<MonitorViewModel>()
     val tenants by viewModel.tenantFlow.collectAsState()
@@ -155,6 +157,7 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
                 exit = scaleOut() + fadeOut()
             ) {
                 Text(
+                    modifier = Modifier.padding(20.dp),
                     text = "Add a Cloud Integration tenant To Monitor",
                     color = Color.DarkGray,
                     fontWeight = FontWeight.Bold,
@@ -183,6 +186,7 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?) {
                         key = { it.id }
                     ) { tenant ->
                         TenantItem(tenant, {
+                            sharedPreferences.setTenant(TenantDBtoSharedPref_mapper.mapToTenantData(tenant))
                             navigator?.push(ScreenMonitor(viewModel = viewModelMonitor))
                         }, { viewModel.deleteTenant(tenant.id) })
                     }

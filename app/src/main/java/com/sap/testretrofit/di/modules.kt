@@ -2,9 +2,10 @@ package com.sap.testretrofit.di
 
 import android.util.Log
 import com.google.gson.Gson
-import com.sap.cpi_monitor.sessionManager.AuthInterceptor
+import com.sap.testretrofit.sessionManager.HeaderAuthInterceptor
 import com.sap.cpi_monitor.sessionManager.SessionManager
 import com.sap.testretrofit.TenantDataDefault
+import com.sap.testretrofit.sessionManager.UrlAuthInterceptor
 import com.sap.testretrofit.data.remote.AuthRepository
 import com.sap.testretrofit.data.remote.MonitorRepository
 import com.sap.testretrofit.presentation.screen.dbUI.InsertTenantViewModel
@@ -38,13 +39,16 @@ fun provideHttpClientBuilder(): OkHttpClient.Builder {
         .connectTimeout(60, TimeUnit.SECONDS)
 }
 
-fun provideCPIAuth(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ): AuthRepository {
+fun provideCPIAuth(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder, sharedPreferences: SessionManager ): AuthRepository {
     val logging = HttpLoggingInterceptor()
-    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+    val urlAuthInterceptor = UrlAuthInterceptor()
+    logging.setLevel(HttpLoggingInterceptor.Level.BODY)
     Log.d("NetworkDI","Starting provideCPIAuth")
     return builder
         .baseUrl(TenantDataDefault.URL_AUTH)
-        .client(okHttp.addInterceptor(logging).build())
+        .client(okHttp.addInterceptor(logging)
+     //       .addInterceptor(urlAuthInterceptor)
+            .build())
         .build()
         .create(AuthRepository::class.java)
 }
@@ -64,9 +68,9 @@ fun provideCPIAuth(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ): Au
         .build()
 }*/
 
-fun provideCPIMonitor(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder ): MonitorRepository {
+fun provideCPIMonitor(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder, sharedPreferences: SessionManager ): MonitorRepository {
     val logging = HttpLoggingInterceptor()
-    val authInterceptor = AuthInterceptor()
+    val authInterceptor = HeaderAuthInterceptor()
     logging.setLevel(HttpLoggingInterceptor.Level.BODY);
     Log.d("NetworkDI","Starting provideCPIMonitor")
     return builder
@@ -97,9 +101,9 @@ val databaseModule = module {
 val appModule = module {
     single { provideRetrofitBuilder() }
     factory { provideHttpClientBuilder() }
-    single { provideCPIAuth(get(), get()) } bind AuthRepository::class
     single { SessionManager( get() ) }
-    single { provideCPIMonitor(get(), get()) } bind MonitorRepository::class
+    single { provideCPIAuth(get(), get(), get()) } bind AuthRepository::class
+    single { provideCPIMonitor(get(), get(), get()) } bind MonitorRepository::class
     single { repoCPI(get()) } bind CpiRepo::class
     viewModel<MonitorViewModel> { MonitorViewModel(get()) }
     Log.d("DI_Modules","Creating View Model")
