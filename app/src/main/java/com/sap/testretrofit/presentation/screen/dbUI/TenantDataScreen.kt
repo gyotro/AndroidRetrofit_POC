@@ -123,30 +123,10 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?, sh
                 title = { Text("Cloud Integration Monitoring App") }
             )
         }*/) { paddings ->
-        /*Column(modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)) {
-            Text(text = "Add or Choose a Cloud Integration tenant To Monitor",
-                modifier =Modifier.padding(10.dp),
-                color = Color.DarkGray,
-                fontSize = TextUnit.Unspecified,
-//                fontStyle = null,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Cursive,
-//                //  letterSpacing =,
-//                textDecoration = null,
-                textAlign = TextAlign.Center,
-//                //  lineHeight =,
-//                // overflow =,
-//                softWrap = false,
-//                maxLines = 0,
-//                minLines = 0,
-//                //   onTextLayout = { -> },
-//                style = TextStyle.Default.fontStyle
-            )*/
+
         Box(
             modifier = Modifier
-                //       .padding(paddings)
+                //.padding(paddings)
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         )
@@ -269,7 +249,5 @@ fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick: () -> Unit, on
             color = Color(0xffebebeb),
             fontSize = 10.sp
         )
-
-
     }
 }

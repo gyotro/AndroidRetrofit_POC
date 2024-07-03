@@ -53,21 +53,6 @@ fun provideCPIAuth(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder, shar
         .create(AuthRepository::class.java)
 }
 
-
-/*fun provideHttpClientMoni(): OkHttpClient {
-    val logging = HttpLoggingInterceptor()
-    val authInterceptor = AuthInterceptor()
-    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-    Log.d("NetworkDI","Starting provideHttpClient")
-    return OkHttpClient
-        .Builder()
-        .addInterceptor(authInterceptor)
-        .addInterceptor(logging)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .connectTimeout(60, TimeUnit.SECONDS)
-        .build()
-}*/
-
 fun provideCPIMonitor(builder: Retrofit.Builder, okHttp: OkHttpClient.Builder, sharedPreferences: SessionManager ): MonitorRepository {
     val logging = HttpLoggingInterceptor()
     val authInterceptor = HeaderAuthInterceptor()

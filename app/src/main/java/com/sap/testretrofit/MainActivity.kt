@@ -40,17 +40,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /*
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    @Preview
-    fun MonitorScreen() {
-        Surface(modifier = Modifier.fillMaxSize(), color = Color.LightGray) {
-            val viewModelMonitor = koinViewModel<MonitorViewModel>()
-            MonitorDataScreen(viewModel = viewModelMonitor, navigator = navigator)
-        }
-    }*/
-
 }
 
 
