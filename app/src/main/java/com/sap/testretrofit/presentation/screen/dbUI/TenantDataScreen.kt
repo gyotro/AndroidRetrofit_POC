@@ -73,7 +73,11 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?, sh
                             text = "Name of the tenant",
                             color = Color.White
                         )
-                    }
+                    },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.White,
+                        focusedLabelColor = Color.White
+                    )
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 OutlinedTextField(
@@ -86,7 +90,11 @@ fun TenantDataScreen(viewModel: InsertTenantViewModel, navigator: Navigator?, sh
                             text = "Add Json File of Tenant service key",
                             color = Color.White
                         )
-                    }
+                    },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.White,
+                        focusedLabelColor = Color.White
+                    )
                 )
                 Spacer(modifier = Modifier.height(18.dp))
                 Button(
@@ -198,7 +206,7 @@ fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick: () -> Unit, on
                 )
             ),
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.DarkGray),
+        colors = CardDefaults.cardColors(containerColor = Color.LightGray),
         elevation = CardDefaults.cardElevation(30.dp)) {
         Row(
             modifier = Modifier
@@ -221,7 +229,7 @@ fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick: () -> Unit, on
                         fontFamily = sap_fiori,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
-                        color = Color.White
+                        color = Color(0xffef8282)
                     )
                 }
             }
@@ -235,7 +243,7 @@ fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick: () -> Unit, on
             ) {
                 Icon(
                     Icons.Default.Delete,
-                    tint = Color.White,
+                    tint = Color.Red,
                     contentDescription = null,
                     modifier = Modifier.clickable {
                         onDelete()
@@ -243,10 +251,10 @@ fun LazyItemScope.TenantItem(tenantEntity: TenantEntity, onClick: () -> Unit, on
             }
         }
         Text(
-            modifier = Modifier.padding(4.dp),
+            modifier = Modifier.padding(10.dp),
             text = tenantEntity.date,
             fontFamily = sap_fiori,
-            color = Color(0xffebebeb),
+            color = Color(0xffef8282),
             fontSize = 10.sp
         )
     }
